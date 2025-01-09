@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sicap_2024/pages/sign_up.dart';
 import 'pages/tambah_catatan.dart';
 
 void main() {
@@ -97,12 +98,19 @@ class DashboardPage extends StatelessWidget {
           ),
           _buildMenuButton(context, 'Tambah Kegiatan', Icons.add, () {
             Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TambahCatatan()), // Arahkan ke halaman TambahCatatan
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      TambahCatatan()), // Arahkan ke halaman TambahCatatan
             );
-            }),
+          }),
           _buildMenuButton(context, 'Rekapitulasi', Icons.list, () {
-            // Navigate to Recap Screen
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      SignUp()), // Arahkan ke halaman TambahCatatan
+            );
           }),
           _buildMenuButton(context, 'Pencarian Data', Icons.search, () {
             // Navigate to Search Screen
@@ -115,7 +123,8 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuButton(BuildContext context, String title, IconData icon, Function onPressed) {
+  Widget _buildMenuButton(
+      BuildContext context, String title, IconData icon, Function onPressed) {
     return Card(
       elevation: 4.0,
       child: ListTile(
@@ -158,5 +167,3 @@ class ProfilPage extends StatelessWidget {
     );
   }
 }
-
-
