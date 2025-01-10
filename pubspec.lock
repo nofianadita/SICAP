@@ -172,18 +172,13 @@ packages:
     source: hosted
     version: "0.19.2"
   path:
-<<<<<<< Updated upstream
     dependency: "direct main"
-=======
-    dependency: "direct dev"
->>>>>>> Stashed changes
     description:
       name: path
       sha256: "087ce49c3f0dc39180befefc60fdb4acd8f8620e5682fe2476afd0b3688bb4af"
       url: "https://pub.dev"
     source: hosted
     version: "1.9.0"
-<<<<<<< Updated upstream
   pool:
     dependency: transitive
     description:
@@ -192,7 +187,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
-=======
   platform:
     dependency: transitive
     description:
@@ -209,7 +203,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
->>>>>>> Stashed changes
   sky_engine:
     dependency: transitive
     description: flutter
