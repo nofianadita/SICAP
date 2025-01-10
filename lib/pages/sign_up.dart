@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mysql1/mysql1.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SignUp extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  String? errorMessage = '';
+  String? errorMessage;
 
   Future<void> _register() async {
     if (_passwordController.text != _confirmPasswordController.text) {
@@ -25,30 +26,32 @@ class _SignUpState extends State<SignUp> {
     }
 
     try {
-      final conn = await MySqlConnection.connect(ConnectionSettings(
-        host: '192.168.5.3', // Ganti dengan IP MySQL server Anda
-        port: 3306,
-        user: 'root',
-        db: 'sicap',
-        password: '', // Kosongkan jika tidak ada password
-      ));
-
-      var result = await conn.query(
-        'INSERT INTO users (nama, email, no_telpon, password) VALUES (?, ?, ?, ?)',
-        [
-          _nameController.text.trim(),
-          _emailController.text.trim(),
-          _phoneController.text.trim(),
-          _passwordController.text.trim(),
-        ],
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2/api_sicap/registerr.php'),
+        body: {
+          'nama': _nameController.text.trim(),
+          'email': _emailController.text.trim(),
+          'no_telpon': _phoneController.text.trim(),
+          'password': _passwordController.text.trim(),
+        },
       );
 
-      await conn.close();
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+      final result = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && result['success'] == true) {
+        // Navigasi ke halaman login jika berhasil
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      } else {
+        setState(() {
+          errorMessage = result['message'] ?? 'Terjadi kesalahan!';
+        });
+      }
     } catch (e) {
       setState(() {
-        errorMessage = e.toString();
+        errorMessage = 'Terjadi kesalahan: $e';
       });
     }
   }
@@ -61,36 +64,36 @@ class _SignUpState extends State<SignUp> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
+            const Center(
               child: Text(
                 'DAFTAR',
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             _buildTextField('Masukkan Nama', _nameController),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildTextField('Masukkan Email', _emailController),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildTextField('Masukkan No Telepon', _phoneController),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildPasswordField('Masukkan Password', _passwordController),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildPasswordField(
                 'Masukkan Kembali Password', _confirmPasswordController),
-            SizedBox(height: 20),
-            if (errorMessage != null && errorMessage!.isNotEmpty)
+            const SizedBox(height: 20),
+            if (errorMessage != null)
               Center(
                 child: Text(
                   errorMessage!,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Center(
               child: ElevatedButton(
                 onPressed: _register,
-                child: Text('Daftar'),
+                child: const Text('Daftar'),
               ),
             ),
           ],
@@ -104,7 +107,7 @@ class _SignUpState extends State<SignUp> {
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
     );
   }
@@ -116,20 +119,21 @@ class _SignUpState extends State<SignUp> {
       obscureText: true,
       decoration: InputDecoration(
         hintText: hintText,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
     );
   }
 }
 
 class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text('Halaman Login'),
       ),
     );
   }
 }
-
